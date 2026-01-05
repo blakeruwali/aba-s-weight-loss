@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
-import { Trophy, TrendingDown, TrendingUp, Minus, DollarSign, ChevronRight, Sparkles, Skull } from "lucide-react";
+import { Trophy, TrendingDown, TrendingUp, Minus, DollarSign, ChevronRight, Sparkles, Skull, Eye } from "lucide-react";
 import type { Member } from "@/data/members";
-import { calculateFines } from "@/data/members";
+import { calculateFines, calculateBMI, getBMICategory } from "@/data/members";
 import { getMemberBadges, getMemberRoast } from "@/lib/roasts";
 import { StatusBadge } from "./StatusBadge";
 
@@ -20,6 +20,8 @@ export const LeaderboardCard = ({ member, rank, percentLoss, index, totalMembers
   const isLastPlace = rank === totalMembers;
   const badges = getMemberBadges(member, percentLoss, rank, totalMembers);
   const roast = getMemberRoast(member, percentLoss, rank, totalMembers);
+  const bmi = calculateBMI(member.currentWeight, member.heightInches);
+  const bmiCategory = getBMICategory(bmi);
   
   const getRankStyle = () => {
     if (isLastPlace) return "bg-destructive/80 text-destructive-foreground";
@@ -181,6 +183,10 @@ export const LeaderboardCard = ({ member, rank, percentLoss, index, totalMembers
               →
             </motion.span>
             <span className="text-foreground font-medium">{member.currentWeight} lbs</span>
+            <span className="text-muted-foreground/60">•</span>
+            <span className={`font-medium ${bmiCategory.color}`}>
+              BMI {bmi.toFixed(1)}
+            </span>
           </div>
           {/* Roast message */}
           {roast && (
@@ -214,7 +220,15 @@ export const LeaderboardCard = ({ member, rank, percentLoss, index, totalMembers
             </div>
           </div>
           
-          <ChevronRight className="h-5 w-5 text-muted-foreground" />
+          {/* Clickable indicator */}
+          <motion.div
+            className="flex flex-col items-center gap-0.5"
+            animate={{ x: [0, 4, 0] }}
+            transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+          >
+            <Eye className="h-4 w-4 text-muted-foreground/60" />
+            <span className="text-[10px] text-muted-foreground/60">Tap</span>
+          </motion.div>
         </div>
       </div>
 
