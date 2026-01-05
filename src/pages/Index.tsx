@@ -6,6 +6,16 @@ import { CountdownTimer } from "@/components/CountdownTimer";
 import { Footer } from "@/components/Footer";
 import { WallOfShame } from "@/components/WallOfShame";
 import { Superlatives } from "@/components/Superlatives";
+import { PrizePoolTracker } from "@/components/PrizePoolTracker";
+import { ProgressProjections } from "@/components/ProgressProjections";
+import { HeadToHead } from "@/components/HeadToHead";
+import { MomentumTracker } from "@/components/MomentumTracker";
+import { AchievementShowcase } from "@/components/AchievementShowcase";
+import { TrashTalkGenerator } from "@/components/TrashTalkGenerator";
+import { FineCalculator } from "@/components/FineCalculator";
+import { WeighInSchedule } from "@/components/WeighInSchedule";
+import { ShareCard } from "@/components/ShareCard";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { motion } from "framer-motion";
 import { members } from "@/data/members";
 
@@ -22,6 +32,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <ThemeToggle />
       <HeroSection />
       <StatsSection />
       
@@ -37,13 +48,40 @@ const Index = () => {
         </div>
       </motion.section>
       
+      {/* Prize Pool */}
+      <PrizePoolTracker />
+      
       <Leaderboard />
+      
+      {/* Momentum Tracker */}
+      <MomentumTracker />
       
       {/* Wall of Shame - Bottom 3 */}
       <WallOfShame members={sortedMembers} />
       
       {/* Superlatives - Funny Awards */}
       <Superlatives />
+      
+      {/* Progress Projections */}
+      <ProgressProjections />
+      
+      {/* Head to Head Comparison */}
+      <HeadToHead />
+      
+      {/* Achievements */}
+      <AchievementShowcase />
+      
+      {/* Trash Talk Generator */}
+      <TrashTalkGenerator />
+      
+      {/* Fine Calculator */}
+      <FineCalculator />
+      
+      {/* Share Card Generator */}
+      <ShareCard />
+      
+      {/* Weigh-In Schedule */}
+      <WeighInSchedule />
       
       <RulesCards />
       <Footer />
