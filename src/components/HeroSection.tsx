@@ -1,7 +1,12 @@
 import { motion } from "framer-motion";
-import { Scale, Trophy, Users } from "lucide-react";
+import { Scale, Trophy, Users, AlertCircle } from "lucide-react";
+import { members } from "@/data/members";
 
 export const HeroSection = () => {
+  const totalStartingWeight = members.reduce((sum, m) => sum + m.startingWeight, 0);
+  const totalPaid = members.reduce((sum, m) => sum + m.balancePaid, 0);
+  const unpaidCount = members.filter(m => m.balancePaid === 0).length;
+
   return (
     <section className="relative overflow-hidden py-16 px-4">
       {/* Background glow effect */}
@@ -46,7 +51,7 @@ export const HeroSection = () => {
             </div>
             <div className="text-left">
               <p className="text-sm text-muted-foreground">Total Starting</p>
-              <p className="font-display text-2xl font-bold">2,226.4 lbs</p>
+              <p className="font-display text-2xl font-bold">{totalStartingWeight.toFixed(1)} lbs</p>
             </div>
           </motion.div>
 
@@ -58,8 +63,14 @@ export const HeroSection = () => {
               <Trophy className="h-6 w-6 text-accent-foreground" />
             </div>
             <div className="text-left">
-              <p className="text-sm text-muted-foreground">Prize Pool</p>
-              <p className="font-display text-2xl font-bold">$1,200</p>
+              <p className="text-sm text-muted-foreground">Collected So Far</p>
+              <p className="font-display text-2xl font-bold">${totalPaid}</p>
+              {unpaidCount > 0 && (
+                <p className="flex items-center gap-1 text-xs text-destructive">
+                  <AlertCircle className="h-3 w-3" />
+                  {unpaidCount} unpaid
+                </p>
+              )}
             </div>
           </motion.div>
         </div>

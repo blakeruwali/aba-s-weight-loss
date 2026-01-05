@@ -7,7 +7,7 @@ export const StatsSection = () => {
   const totalCurrentWeight = members.reduce((sum, m) => sum + m.currentWeight, 0);
   const totalLost = totalStartingWeight - totalCurrentWeight;
   const avgPercentLoss = (totalLost / totalStartingWeight) * 100;
-  const prizePool = members.length * challengeConfig.entryFee;
+  const totalPaid = members.reduce((sum, m) => sum + m.balancePaid, 0);
 
   const stats = [
     {
@@ -29,8 +29,8 @@ export const StatsSection = () => {
       color: "text-accent",
     },
     {
-      label: "Prize Pool",
-      value: `$${prizePool}`,
+      label: "Collected",
+      value: `$${totalPaid}`,
       icon: <DollarSign className="h-5 w-5" />,
       color: "text-accent",
     },
