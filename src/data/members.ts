@@ -8,17 +8,17 @@ export interface Member {
 }
 
 export const members: Member[] = [
-  { id: "1", name: "Shikhar", balancePaid: 100, startingWeight: 221.9, currentWeight: 221.9, fines: 0 },
+  { id: "1", name: "Shikhar", balancePaid: 0, startingWeight: 221.9, currentWeight: 221.9, fines: 0 },
   { id: "2", name: "Bivek", balancePaid: 100, startingWeight: 193, currentWeight: 193, fines: 0 },
   { id: "3", name: "Suraj", balancePaid: 100, startingWeight: 163.1, currentWeight: 163.1, fines: 0 },
-  { id: "4", name: "Rabin", balancePaid: 100, startingWeight: 165.1, currentWeight: 165.1, fines: 0 },
-  { id: "5", name: "Rajeev", balancePaid: 100, startingWeight: 200.2, currentWeight: 200.2, fines: 0 },
+  { id: "4", name: "Rabin", balancePaid: 0, startingWeight: 202.2, currentWeight: 202.2, fines: 0 },
+  { id: "5", name: "Rajeev", balancePaid: 100, startingWeight: 182.2, currentWeight: 182.2, fines: 0 },
   { id: "6", name: "Pradeep", balancePaid: 100, startingWeight: 190.1, currentWeight: 190.1, fines: 0 },
   { id: "7", name: "Danny", balancePaid: 100, startingWeight: 191.1, currentWeight: 191.1, fines: 0 },
   { id: "8", name: "Purushottam", balancePaid: 100, startingWeight: 187.1, currentWeight: 187.1, fines: 0 },
-  { id: "9", name: "Bipul", balancePaid: 100, startingWeight: 163.1, currentWeight: 163.1, fines: 0 },
+  { id: "9", name: "Bipul", balancePaid: 0, startingWeight: 163.1, currentWeight: 163.1, fines: 0 },
   { id: "10", name: "Bishant", balancePaid: 100, startingWeight: 199.1, currentWeight: 199.1, fines: 0 },
-  { id: "11", name: "Bikram", balancePaid: 100, startingWeight: 195.01, currentWeight: 195.01, fines: 0 },
+  { id: "11", name: "Bikram", balancePaid: 100, startingWeight: 195.1, currentWeight: 195.1, fines: 0 },
   { id: "12", name: "Blake", balancePaid: 100, startingWeight: 157.6, currentWeight: 157.6, fines: 0 },
 ];
 
