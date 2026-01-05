@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { motion } from "framer-motion";
 import { Share2, Download, Trophy, TrendingDown, Scale } from "lucide-react";
-import { members, calculateBMI } from "@/data/members";
+import { members, calculateBMI, getMemberHeight } from "@/data/members";
 import { Button } from "./ui/button";
 import { toast } from "sonner";
 
@@ -10,7 +10,13 @@ export const ShareCard = () => {
   const cardRef = useRef<HTMLDivElement>(null);
 
   const percentLoss = ((selectedMember.startingWeight - selectedMember.currentWeight) / selectedMember.startingWeight) * 100;
-  const bmi = calculateBMI(selectedMember.currentWeight, selectedMember.heightInches);
+  
+  // Get height from localStorage or member data
+  const storedHeight = getMemberHeight(selectedMember.id);
+  const heightInches = storedHeight || selectedMember.heightInches;
+  const hasBMI = heightInches != null && heightInches > 0;
+  const bmi = hasBMI ? calculateBMI(selectedMember.currentWeight, heightInches) : null;
+  
   const rank = [...members]
     .sort((a, b) => {
       const aLoss = (a.startingWeight - a.currentWeight) / a.startingWeight;
@@ -20,7 +26,11 @@ export const ShareCard = () => {
     .findIndex((m) => m.id === selectedMember.id) + 1;
 
   const copyShareText = () => {
-    const text = `🏋️ ${selectedMember.name}'s Weight Loss Challenge Update!\n\n📊 Stats:\n• Rank: #${rank} of ${members.length}\n• Weight Loss: ${percentLoss.toFixed(1)}%\n• Current: ${selectedMember.currentWeight} lbs\n• BMI: ${bmi.toFixed(1)}\n\n💪 Aba Dublauchha Long Island Challenge`;
+    let text = `🏋️ ${selectedMember.name}'s Weight Loss Challenge Update!\n\n📊 Stats:\n• Rank: #${rank} of ${members.length}\n• Weight Loss: ${percentLoss.toFixed(1)}%\n• Current: ${selectedMember.currentWeight} lbs`;
+    if (bmi) {
+      text += `\n• BMI: ${bmi.toFixed(1)}`;
+    }
+    text += `\n\n💪 Aba Dublauchha Long Island Challenge`;
     navigator.clipboard.writeText(text);
     toast.success("Share text copied to clipboard!");
   };
@@ -106,7 +116,9 @@ export const ShareCard = () => {
 
             <div className="flex items-center justify-between text-sm bg-muted/50 rounded-lg px-4 py-2">
               <span className="text-muted-foreground">Started: {selectedMember.startingWeight} lbs</span>
-              <span className="text-muted-foreground">BMI: {bmi.toFixed(1)}</span>
+              {hasBMI && bmi && (
+                <span className="text-muted-foreground">BMI: {bmi.toFixed(1)}</span>
+              )}
             </div>
 
             {percentLoss >= 7 && (

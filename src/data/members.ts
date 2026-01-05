@@ -11,9 +11,20 @@ export interface Member {
   startingWeight: number;
   currentWeight: number;
   fines: number;
-  heightInches: number; // height in inches for BMI calculation
+  heightInches?: number; // Optional - height in inches for BMI calculation
   weightHistory: WeighIn[];
 }
+
+// Get height from localStorage
+export const getMemberHeight = (memberId: string): number | null => {
+  const stored = localStorage.getItem(`member-height-${memberId}`);
+  return stored ? parseFloat(stored) : null;
+};
+
+// Save height to localStorage
+export const saveMemberHeight = (memberId: string, heightInches: number): void => {
+  localStorage.setItem(`member-height-${memberId}`, heightInches.toString());
+};
 
 // Calculate BMI from weight (lbs) and height (inches)
 export const calculateBMI = (weightLbs: number, heightInches: number): number => {
@@ -65,7 +76,6 @@ export const members: Member[] = [
     startingWeight: 221.9, 
     currentWeight: 221.9, 
     fines: 0,
-    heightInches: 70,
     weightHistory: [{ date: "2025-01-04", weight: 221.9, attended: true }]
   },
   { 
@@ -75,7 +85,6 @@ export const members: Member[] = [
     startingWeight: 193, 
     currentWeight: 193, 
     fines: 0,
-    heightInches: 68,
     weightHistory: [{ date: "2025-01-04", weight: 193, attended: true }]
   },
   { 
@@ -85,7 +94,6 @@ export const members: Member[] = [
     startingWeight: 163.1, 
     currentWeight: 163.1, 
     fines: 0,
-    heightInches: 66,
     weightHistory: [{ date: "2025-01-04", weight: 163.1, attended: true }]
   },
   { 
@@ -95,7 +103,6 @@ export const members: Member[] = [
     startingWeight: 202.2, 
     currentWeight: 202.2, 
     fines: 0,
-    heightInches: 69,
     weightHistory: [{ date: "2025-01-04", weight: 202.2, attended: true }]
   },
   { 
@@ -105,7 +112,6 @@ export const members: Member[] = [
     startingWeight: 182.2, 
     currentWeight: 182.2, 
     fines: 0,
-    heightInches: 67,
     weightHistory: [{ date: "2025-01-04", weight: 182.2, attended: true }]
   },
   { 
@@ -115,7 +121,6 @@ export const members: Member[] = [
     startingWeight: 190.1, 
     currentWeight: 190.1, 
     fines: 0,
-    heightInches: 68,
     weightHistory: [{ date: "2025-01-04", weight: 190.1, attended: true }]
   },
   { 
@@ -125,7 +130,6 @@ export const members: Member[] = [
     startingWeight: 191.1, 
     currentWeight: 191.1, 
     fines: 0,
-    heightInches: 69,
     weightHistory: [{ date: "2025-01-04", weight: 191.1, attended: true }]
   },
   { 
@@ -135,7 +139,6 @@ export const members: Member[] = [
     startingWeight: 187.1, 
     currentWeight: 187.1, 
     fines: 0,
-    heightInches: 67,
     weightHistory: [{ date: "2025-01-04", weight: 187.1, attended: true }]
   },
   { 
@@ -145,7 +148,6 @@ export const members: Member[] = [
     startingWeight: 163.1, 
     currentWeight: 163.1, 
     fines: 0,
-    heightInches: 65,
     weightHistory: [{ date: "2025-01-04", weight: 163.1, attended: true }]
   },
   { 
@@ -155,7 +157,6 @@ export const members: Member[] = [
     startingWeight: 199.1, 
     currentWeight: 199.1, 
     fines: 0,
-    heightInches: 70,
     weightHistory: [{ date: "2025-01-04", weight: 199.1, attended: true }]
   },
   { 
@@ -165,7 +166,6 @@ export const members: Member[] = [
     startingWeight: 195.1, 
     currentWeight: 195.1, 
     fines: 0,
-    heightInches: 69,
     weightHistory: [{ date: "2025-01-04", weight: 195.1, attended: true }]
   },
   { 
@@ -175,7 +175,6 @@ export const members: Member[] = [
     startingWeight: 157.6, 
     currentWeight: 157.6, 
     fines: 0,
-    heightInches: 64,
     weightHistory: [{ date: "2025-01-04", weight: 157.6, attended: true }]
   },
 ];
