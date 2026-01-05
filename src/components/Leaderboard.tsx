@@ -63,6 +63,7 @@ export const Leaderboard = () => {
                 rank={index + 1}
                 percentLoss={percentLoss}
                 index={index}
+                totalMembers={sortedMembers.length}
                 onClick={() => setSelectedMember(member)}
               />
             );

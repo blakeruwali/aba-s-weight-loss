@@ -1,21 +1,28 @@
 import { motion } from "framer-motion";
-import { Trophy, TrendingDown, TrendingUp, Minus, DollarSign, ChevronRight, Sparkles } from "lucide-react";
+import { Trophy, TrendingDown, TrendingUp, Minus, DollarSign, ChevronRight, Sparkles, Skull } from "lucide-react";
 import type { Member } from "@/data/members";
 import { calculateFines } from "@/data/members";
+import { getMemberBadges, getMemberRoast } from "@/lib/roasts";
+import { StatusBadge } from "./StatusBadge";
 
 interface LeaderboardCardProps {
   member: Member;
   rank: number;
   percentLoss: number;
   index: number;
+  totalMembers: number;
   onClick?: () => void;
 }
 
-export const LeaderboardCard = ({ member, rank, percentLoss, index, onClick }: LeaderboardCardProps) => {
+export const LeaderboardCard = ({ member, rank, percentLoss, index, totalMembers, onClick }: LeaderboardCardProps) => {
   const calculatedFines = calculateFines(member);
   const hasReachedGoal = percentLoss >= 7;
+  const isLastPlace = rank === totalMembers;
+  const badges = getMemberBadges(member, percentLoss, rank, totalMembers);
+  const roast = getMemberRoast(member, percentLoss, rank, totalMembers);
   
   const getRankStyle = () => {
+    if (isLastPlace) return "bg-destructive/80 text-destructive-foreground";
     if (rank === 1) return "bg-gradient-gold text-accent-foreground animate-scale-pulse";
     if (rank === 2) return "bg-gradient-silver text-foreground";
     if (rank === 3) return "bg-gradient-bronze text-foreground";
@@ -23,6 +30,7 @@ export const LeaderboardCard = ({ member, rank, percentLoss, index, onClick }: L
   };
 
   const getCardStyle = () => {
+    if (isLastPlace) return "border-destructive/50 shadow-[0_0_30px_hsl(0_80%_50%_/_0.3)]";
     if (hasReachedGoal) return "border-accent/60 shadow-[0_0_40px_hsl(75_80%_60%_/_0.4)]";
     if (rank === 1) return "border-accent/50 shadow-[0_0_30px_hsl(45_100%_55%_/_0.3)]";
     if (rank === 2) return "border-muted-foreground/30 shadow-[0_0_20px_hsl(220_10%_50%_/_0.2)]";
@@ -48,11 +56,33 @@ export const LeaderboardCard = ({ member, rank, percentLoss, index, onClick }: L
         type: "spring",
         stiffness: 100
       }}
-      whileHover={{ scale: 1.03, x: 10 }}
+      whileHover={{ 
+        scale: isLastPlace ? 1.02 : 1.03, 
+        x: 10,
+        rotate: isLastPlace ? [0, 1, -1, 0] : 0,
+      }}
       whileTap={{ scale: 0.98 }}
       onClick={onClick}
       className={`relative cursor-pointer overflow-hidden rounded-xl border bg-gradient-card p-4 shadow-card transition-all ${getCardStyle()}`}
     >
+      {/* Last place special effects */}
+      {isLastPlace && (
+        <>
+          <motion.div
+            className="absolute inset-0 rounded-xl bg-gradient-to-r from-destructive/10 via-destructive/5 to-destructive/10"
+            animate={{ opacity: [0.3, 0.5, 0.3] }}
+            transition={{ repeat: Infinity, duration: 1.5 }}
+          />
+          <motion.div
+            className="absolute -top-1 -left-1"
+            animate={{ rotate: [0, 10, -10, 0], scale: [1, 1.1, 1] }}
+            transition={{ repeat: Infinity, duration: 1.5 }}
+          >
+            <span className="text-lg">💀</span>
+          </motion.div>
+        </>
+      )}
+
       {/* Goal achieved sparkle effect */}
       {hasReachedGoal && (
         <>
@@ -99,7 +129,7 @@ export const LeaderboardCard = ({ member, rank, percentLoss, index, onClick }: L
       )}
 
       {/* Shimmer effect for top 3 */}
-      {rank <= 3 && (
+      {rank <= 3 && !isLastPlace && (
         <motion.div
           className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent"
           animate={{ x: ["-100%", "200%"] }}
@@ -112,7 +142,7 @@ export const LeaderboardCard = ({ member, rank, percentLoss, index, onClick }: L
         initial={{ width: 0 }}
         animate={{ width: `${progressWidth}%` }}
         transition={{ delay: index * 0.08 + 0.5, duration: 1, ease: "easeOut" }}
-        className="absolute inset-y-0 left-0 bg-primary/10"
+        className={`absolute inset-y-0 left-0 ${isLastPlace ? 'bg-destructive/10' : 'bg-primary/10'}`}
       />
 
       <div className="relative flex items-center gap-4">
@@ -123,7 +153,11 @@ export const LeaderboardCard = ({ member, rank, percentLoss, index, onClick }: L
           transition={{ delay: index * 0.08 + 0.3, type: "spring", stiffness: 200 }}
           className={`flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full font-display font-bold text-lg ${getRankStyle()}`}
         >
-          {rank === 1 ? (
+          {isLastPlace ? (
+            <motion.div animate={{ scale: [1, 1.2, 1] }} transition={{ repeat: Infinity, duration: 1 }}>
+              <Skull className="h-6 w-6" />
+            </motion.div>
+          ) : rank === 1 ? (
             <motion.div animate={{ rotate: [0, 10, -10, 0] }} transition={{ repeat: Infinity, duration: 1 }}>
               <Trophy className="h-6 w-6" />
             </motion.div>
@@ -132,7 +166,12 @@ export const LeaderboardCard = ({ member, rank, percentLoss, index, onClick }: L
 
         {/* Name and weight info */}
         <div className="flex-1 min-w-0">
-          <h3 className="font-display text-lg font-bold truncate">{member.name}</h3>
+          <div className="flex items-center gap-2 flex-wrap">
+            <h3 className="font-display text-lg font-bold truncate">{member.name}</h3>
+            {badges.map((badge, i) => (
+              <StatusBadge key={badge.type} badge={badge} index={i} />
+            ))}
+          </div>
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <span>{member.startingWeight} lbs</span>
             <motion.span 
@@ -143,6 +182,17 @@ export const LeaderboardCard = ({ member, rank, percentLoss, index, onClick }: L
             </motion.span>
             <span className="text-foreground font-medium">{member.currentWeight} lbs</span>
           </div>
+          {/* Roast message */}
+          {roast && (
+            <motion.p
+              initial={{ opacity: 0, y: 5 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: index * 0.08 + 0.6 }}
+              className="text-xs text-muted-foreground italic mt-1"
+            >
+              "{roast}"
+            </motion.p>
+          )}
         </div>
 
         {/* Percentage loss */}
@@ -181,8 +231,8 @@ export const LeaderboardCard = ({ member, rank, percentLoss, index, onClick }: L
         </motion.div>
       )}
 
-      {/* Unpaid badge */}
-      {member.balancePaid === 0 && (
+      {/* Unpaid badge - only show if no unpaid status badge */}
+      {member.balancePaid === 0 && !badges.some(b => b.type === "unpaid") && (
         <motion.div 
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}

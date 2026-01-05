@@ -1,13 +1,27 @@
-import { motion } from "framer-motion";
-import { Scale, Trophy, Users, AlertCircle, Flame, Sparkles } from "lucide-react";
+import { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { Scale, Trophy, AlertCircle, Sparkles } from "lucide-react";
 import { members } from "@/data/members";
 import { AnimatedCounter } from "./AnimatedCounter";
 import { FloatingParticles } from "./FloatingParticles";
+import { funnyHeadlines } from "@/lib/roasts";
 
 export const HeroSection = () => {
+  const [currentHeadline, setCurrentHeadline] = useState(0);
+  
   const totalStartingWeight = members.reduce((sum, m) => sum + m.startingWeight, 0);
+  const totalCurrentWeight = members.reduce((sum, m) => sum + m.currentWeight, 0);
+  const totalLost = totalStartingWeight - totalCurrentWeight;
   const totalPaid = members.reduce((sum, m) => sum + m.balancePaid, 0);
   const unpaidCount = members.filter(m => m.balancePaid === 0).length;
+
+  // Rotate headlines every 5 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentHeadline((prev) => (prev + 1) % funnyHeadlines.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   return (
     <section className="relative overflow-hidden py-16 px-4">
@@ -64,15 +78,47 @@ export const HeroSection = () => {
           <span className="text-foreground">Long Island</span>
         </motion.h1>
 
-        <motion.p 
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.5 }}
-          className="mx-auto mb-8 max-w-lg text-lg text-muted-foreground"
-        >
-          A curated weight loss challenge. Track progress, stay accountable, 
-          and compete for the prize pool.
-        </motion.p>
+        {/* Rotating funny headlines */}
+        <div className="mx-auto mb-8 max-w-lg h-14 relative">
+          <AnimatePresence mode="wait">
+            <motion.p
+              key={currentHeadline}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.5 }}
+              className="text-lg text-muted-foreground italic absolute inset-0 flex items-center justify-center"
+            >
+              "{funnyHeadlines[currentHeadline]}"
+            </motion.p>
+          </AnimatePresence>
+        </div>
+
+        {/* Weight lost counter */}
+        {totalLost > 0 && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: 0.4 }}
+            className="mb-6 inline-flex items-center gap-2 rounded-full bg-primary/20 px-4 py-2 text-primary border border-primary/30"
+          >
+            <motion.span
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ repeat: Infinity, duration: 1.5 }}
+            >
+              🔥
+            </motion.span>
+            <span className="font-display font-bold">
+              {totalLost.toFixed(1)} lbs of regret leaving Long Island
+            </span>
+            <motion.span
+              animate={{ scale: [1, 1.2, 1] }}
+              transition={{ repeat: Infinity, duration: 1.5, delay: 0.3 }}
+            >
+              🔥
+            </motion.span>
+          </motion.div>
+        )}
 
         <div className="flex flex-wrap items-center justify-center gap-4">
           <motion.div

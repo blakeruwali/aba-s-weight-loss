@@ -4,9 +4,21 @@ import { Leaderboard } from "@/components/Leaderboard";
 import { RulesCards } from "@/components/RulesCards";
 import { CountdownTimer } from "@/components/CountdownTimer";
 import { Footer } from "@/components/Footer";
+import { WallOfShame } from "@/components/WallOfShame";
 import { motion } from "framer-motion";
+import { members } from "@/data/members";
 
 const Index = () => {
+  // Calculate sorted members with percent loss for Wall of Shame
+  const sortedMembers = [...members]
+    .map((member) => ({
+      member,
+      percentLoss: ((member.startingWeight - member.currentWeight) / member.startingWeight) * 100,
+      rank: 0,
+    }))
+    .sort((a, b) => b.percentLoss - a.percentLoss)
+    .map((entry, index) => ({ ...entry, rank: index + 1 }));
+
   return (
     <div className="min-h-screen bg-background">
       <HeroSection />
@@ -25,6 +37,10 @@ const Index = () => {
       </motion.section>
       
       <Leaderboard />
+      
+      {/* Wall of Shame - Bottom 3 */}
+      <WallOfShame members={sortedMembers} />
+      
       <RulesCards />
       <Footer />
     </div>
