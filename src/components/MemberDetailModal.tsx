@@ -1,8 +1,9 @@
-import { motion, AnimatePresence } from "framer-motion";
-import { X, TrendingDown, TrendingUp, Scale, AlertCircle, CheckCircle, DollarSign } from "lucide-react";
+import { useEffect } from "react";
+import { motion } from "framer-motion";
+import { TrendingDown, TrendingUp, Scale, AlertCircle, CheckCircle, DollarSign, PartyPopper } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { WeightChart } from "./WeightChart";
-import { AnimatedCounter } from "./AnimatedCounter";
+import confetti from "canvas-confetti";
 import type { Member } from "@/data/members";
 import { calculateFines } from "@/data/members";
 
@@ -11,6 +12,34 @@ interface MemberDetailModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
+
+const triggerConfetti = () => {
+  const duration = 3000;
+  const end = Date.now() + duration;
+
+  const colors = ['#CAEF5D', '#FFD700', '#00FF00', '#FFFFFF'];
+
+  (function frame() {
+    confetti({
+      particleCount: 4,
+      angle: 60,
+      spread: 55,
+      origin: { x: 0 },
+      colors: colors,
+    });
+    confetti({
+      particleCount: 4,
+      angle: 120,
+      spread: 55,
+      origin: { x: 1 },
+      colors: colors,
+    });
+
+    if (Date.now() < end) {
+      requestAnimationFrame(frame);
+    }
+  })();
+};
 
 export const MemberDetailModal = ({ member, isOpen, onClose }: MemberDetailModalProps) => {
   if (!member) return null;
@@ -21,6 +50,14 @@ export const MemberDetailModal = ({ member, isOpen, onClose }: MemberDetailModal
   const goalWeight = member.startingWeight * 0.93;
   const weightToGoal = member.currentWeight - goalWeight;
   const goalProgress = Math.min((percentLoss / 7) * 100, 100);
+  const hasReachedGoal = percentLoss >= 7;
+
+  // Trigger confetti when modal opens and member has reached 7% goal
+  useEffect(() => {
+    if (isOpen && hasReachedGoal) {
+      triggerConfetti();
+    }
+  }, [isOpen, hasReachedGoal]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -143,10 +180,40 @@ export const MemberDetailModal = ({ member, isOpen, onClose }: MemberDetailModal
             <p className="text-xs text-muted-foreground">
               {weightToGoal > 0 
                 ? `${weightToGoal.toFixed(1)} lbs to go for $50 refund`
-                : "🎉 Eligible for $50 refund!"
+                : (
+                  <span className="flex items-center gap-1 text-accent font-medium">
+                    <PartyPopper className="h-3 w-3" />
+                    Eligible for $50 refund!
+                    <PartyPopper className="h-3 w-3" />
+                  </span>
+                )
               }
             </p>
           </motion.div>
+
+          {/* Goal Achieved Banner */}
+          {hasReachedGoal && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.8 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{ delay: 0.6, type: "spring" }}
+              className="flex items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-accent/20 via-primary/20 to-accent/20 p-4 border border-accent/30"
+            >
+              <motion.div
+                animate={{ rotate: [-10, 10, -10] }}
+                transition={{ repeat: Infinity, duration: 0.5 }}
+              >
+                <PartyPopper className="h-6 w-6 text-accent" />
+              </motion.div>
+              <span className="font-display font-bold text-accent">7% GOAL ACHIEVED!</span>
+              <motion.div
+                animate={{ rotate: [10, -10, 10] }}
+                transition={{ repeat: Infinity, duration: 0.5 }}
+              >
+                <PartyPopper className="h-6 w-6 text-accent" />
+              </motion.div>
+            </motion.div>
+          )}
 
           {/* Weight Chart */}
           <motion.div
