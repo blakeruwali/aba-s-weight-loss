@@ -50,6 +50,10 @@ export const MemberDetailModal = ({ member, isOpen, onClose }: MemberDetailModal
   const [isEditingHeight, setIsEditingHeight] = useState(false);
   const [savedHeight, setSavedHeight] = useState<number | null>(null);
 
+  // Calculate values (safe even if member is null)
+  const percentLoss = member ? ((member.startingWeight - member.currentWeight) / member.startingWeight) * 100 : 0;
+  const hasReachedGoal = percentLoss >= 7;
+
   // Load saved height when modal opens
   useEffect(() => {
     if (member && isOpen) {
@@ -60,6 +64,7 @@ export const MemberDetailModal = ({ member, isOpen, onClose }: MemberDetailModal
         const inches = stored % 12;
         setHeightFeet(feet.toString());
         setHeightInchesInput(inches.toString());
+        setIsEditingHeight(false);
       } else {
         setHeightFeet("");
         setHeightInchesInput("");
@@ -68,15 +73,21 @@ export const MemberDetailModal = ({ member, isOpen, onClose }: MemberDetailModal
     }
   }, [member, isOpen]);
 
+  // Trigger confetti when modal opens and member has reached 7% goal
+  useEffect(() => {
+    if (isOpen && hasReachedGoal) {
+      triggerConfetti();
+    }
+  }, [isOpen, hasReachedGoal]);
+
+  // Early return AFTER all hooks
   if (!member) return null;
 
-  const percentLoss = ((member.startingWeight - member.currentWeight) / member.startingWeight) * 100;
   const isWinning = percentLoss > 0;
   const calculatedFines = calculateFines(member);
   const goalWeight = member.startingWeight * 0.93;
   const weightToGoal = member.currentWeight - goalWeight;
   const goalProgress = Math.min((percentLoss / 7) * 100, 100);
-  const hasReachedGoal = percentLoss >= 7;
 
   const heightInches = savedHeight || member.heightInches;
   const hasBMI = heightInches != null && heightInches > 0;
@@ -98,13 +109,6 @@ export const MemberDetailModal = ({ member, isOpen, onClose }: MemberDetailModal
     setIsEditingHeight(false);
     toast.success("Height saved!");
   };
-
-  // Trigger confetti when modal opens and member has reached 7% goal
-  useEffect(() => {
-    if (isOpen && hasReachedGoal) {
-      triggerConfetti();
-    }
-  }, [isOpen, hasReachedGoal]);
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
