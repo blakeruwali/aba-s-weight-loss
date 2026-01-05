@@ -1,6 +1,5 @@
-import { useState } from "react";
 import { motion } from "framer-motion";
-import { Trophy, TrendingDown, TrendingUp, Minus, DollarSign, ChevronRight } from "lucide-react";
+import { Trophy, TrendingDown, TrendingUp, Minus, DollarSign, ChevronRight, Sparkles } from "lucide-react";
 import type { Member } from "@/data/members";
 import { calculateFines } from "@/data/members";
 
@@ -14,6 +13,7 @@ interface LeaderboardCardProps {
 
 export const LeaderboardCard = ({ member, rank, percentLoss, index, onClick }: LeaderboardCardProps) => {
   const calculatedFines = calculateFines(member);
+  const hasReachedGoal = percentLoss >= 7;
   
   const getRankStyle = () => {
     if (rank === 1) return "bg-gradient-gold text-accent-foreground animate-scale-pulse";
@@ -23,6 +23,7 @@ export const LeaderboardCard = ({ member, rank, percentLoss, index, onClick }: L
   };
 
   const getCardStyle = () => {
+    if (hasReachedGoal) return "border-accent/60 shadow-[0_0_40px_hsl(75_80%_60%_/_0.4)]";
     if (rank === 1) return "border-accent/50 shadow-[0_0_30px_hsl(45_100%_55%_/_0.3)]";
     if (rank === 2) return "border-muted-foreground/30 shadow-[0_0_20px_hsl(220_10%_50%_/_0.2)]";
     if (rank === 3) return "border-orange-600/30 shadow-[0_0_20px_hsl(25_60%_50%_/_0.2)]";
@@ -52,6 +53,51 @@ export const LeaderboardCard = ({ member, rank, percentLoss, index, onClick }: L
       onClick={onClick}
       className={`relative cursor-pointer overflow-hidden rounded-xl border bg-gradient-card p-4 shadow-card transition-all ${getCardStyle()}`}
     >
+      {/* Goal achieved sparkle effect */}
+      {hasReachedGoal && (
+        <>
+          {/* Pulsing glow overlay */}
+          <motion.div
+            className="absolute inset-0 rounded-xl bg-gradient-to-r from-accent/20 via-primary/10 to-accent/20"
+            animate={{ opacity: [0.3, 0.6, 0.3] }}
+            transition={{ repeat: Infinity, duration: 2, ease: "easeInOut" }}
+          />
+          
+          {/* Sparkle icons */}
+          <motion.div
+            className="absolute top-2 left-2"
+            animate={{ scale: [1, 1.3, 1], opacity: [0.7, 1, 0.7] }}
+            transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut" }}
+          >
+            <Sparkles className="h-4 w-4 text-accent" />
+          </motion.div>
+          <motion.div
+            className="absolute bottom-2 right-12"
+            animate={{ scale: [1, 1.3, 1], opacity: [0.7, 1, 0.7] }}
+            transition={{ repeat: Infinity, duration: 1.5, ease: "easeInOut", delay: 0.5 }}
+          >
+            <Sparkles className="h-3 w-3 text-accent" />
+          </motion.div>
+          <motion.div
+            className="absolute top-1/2 right-2 -translate-y-1/2"
+            animate={{ scale: [1, 1.2, 1], opacity: [0.5, 1, 0.5] }}
+            transition={{ repeat: Infinity, duration: 1.2, ease: "easeInOut", delay: 0.3 }}
+          >
+            <Sparkles className="h-4 w-4 text-primary" />
+          </motion.div>
+          
+          {/* Goal badge */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ delay: index * 0.08 + 0.7, type: "spring" }}
+            className="absolute -top-1 -right-1 bg-accent text-accent-foreground text-[10px] font-bold px-2 py-0.5 rounded-full shadow-lg"
+          >
+            7% GOAL!
+          </motion.div>
+        </>
+      )}
+
       {/* Shimmer effect for top 3 */}
       {rank <= 3 && (
         <motion.div
