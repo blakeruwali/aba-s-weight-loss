@@ -4,7 +4,7 @@ import { challengeConfig } from "@/data/members";
 
 const generateSchedule = () => {
   const schedule = [];
-  const startDate = new Date("2026-01-04");
+  const startDate = new Date("2026-01-04"); // First Sunday
   const endDate = new Date(challengeConfig.finalCheckpoint);
   
   let currentDate = new Date(startDate);
@@ -15,12 +15,12 @@ const generateSchedule = () => {
       date: new Date(currentDate),
       label: weekNumber === 0 ? "Starting Weigh-In" : 
              currentDate.getTime() === endDate.getTime() ? "Final Weigh-In" :
-             `Checkpoint ${weekNumber}`,
+             `Week ${weekNumber}`,
       isPast: currentDate < new Date(),
       isFinal: currentDate.getTime() === endDate.getTime(),
     });
     
-    currentDate.setDate(currentDate.getDate() + 14); // Biweekly
+    currentDate.setDate(currentDate.getDate() + 7); // Every Sunday (weekly)
     weekNumber++;
   }
   
@@ -53,7 +53,7 @@ export const WeighInSchedule = () => {
             Weigh-In Calendar 📅
           </h2>
           <p className="text-muted-foreground mt-2">
-            Every {challengeConfig.weighInFrequency} at {challengeConfig.weighInTime}
+            Every Sunday at {challengeConfig.weighInTime}
           </p>
         </div>
 
