@@ -32,7 +32,7 @@ const Index = () => {
         className="px-4 py-8"
       >
         <div className="mx-auto max-w-md">
-          <CountdownTimer targetDate="2025-01-18T10:00:00" label="Next Weigh-In" />
+          <CountdownTimer targetDate="2026-01-18T14:00:00" label="Next Weigh-In (Biweekly)" />
         </div>
       </motion.section>
       
