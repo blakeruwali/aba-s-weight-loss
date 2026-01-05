@@ -188,9 +188,10 @@ export const challengeConfig = {
   finalGainFine: 50,
   winnerSplit: 0.75,
   runnerUpSplit: 0.25,
-  weighInFrequency: "biweekly",
+  weighInFrequency: "weekly",
+  weighInDay: "Sunday",
   weighInTime: "2:00 PM",
-  nextCheckpoint: "January 18, 2026",
+  nextCheckpoint: "January 11, 2026",
   finalCheckpoint: "March 29, 2026",
 };
 
