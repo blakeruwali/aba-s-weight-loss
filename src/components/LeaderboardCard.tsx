@@ -1,9 +1,11 @@
 import { motion } from "framer-motion";
-import { Trophy, TrendingDown, TrendingUp, Minus, DollarSign, ChevronRight, Sparkles, Skull, Eye } from "lucide-react";
+import { Trophy, TrendingDown, TrendingUp, Minus, DollarSign, Sparkles, Skull, Eye } from "lucide-react";
 import type { Member } from "@/data/members";
 import { calculateFines, calculateBMI, getBMICategory } from "@/data/members";
 import { getMemberBadges, getMemberRoast } from "@/lib/roasts";
 import { StatusBadge } from "./StatusBadge";
+import { useEasterEgg } from "@/hooks/useEasterEgg";
+import { playSadTrombone, playVictory } from "@/lib/sounds";
 
 interface LeaderboardCardProps {
   member: Member;
@@ -22,6 +24,20 @@ export const LeaderboardCard = ({ member, rank, percentLoss, index, totalMembers
   const roast = getMemberRoast(member, percentLoss, rank, totalMembers);
   const bmi = calculateBMI(member.currentWeight, member.heightInches);
   const bmiCategory = getBMICategory(bmi);
+  const { handleClick: handleEasterEgg, triggered: easterEggTriggered } = useEasterEgg();
+  
+  const handleCardClick = () => {
+    handleEasterEgg();
+    
+    // Play sound based on status
+    if (hasReachedGoal) {
+      playVictory();
+    } else if (percentLoss < 0 || isLastPlace) {
+      playSadTrombone();
+    }
+    
+    onClick?.();
+  };
   
   const getRankStyle = () => {
     if (isLastPlace) return "bg-destructive/80 text-destructive-foreground";
@@ -64,8 +80,8 @@ export const LeaderboardCard = ({ member, rank, percentLoss, index, totalMembers
         rotate: isLastPlace ? [0, 1, -1, 0] : 0,
       }}
       whileTap={{ scale: 0.98 }}
-      onClick={onClick}
-      className={`relative cursor-pointer overflow-hidden rounded-xl border bg-gradient-card p-4 shadow-card transition-all ${getCardStyle()}`}
+      onClick={handleCardClick}
+      className={`relative cursor-pointer overflow-hidden rounded-xl border bg-gradient-card p-4 shadow-card transition-all ${getCardStyle()} ${easterEggTriggered ? 'animate-pulse' : ''}`}
     >
       {/* Last place special effects */}
       {isLastPlace && (
