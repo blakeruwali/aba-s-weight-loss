@@ -1,11 +1,14 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { TrendingDown, TrendingUp, Scale, AlertCircle, CheckCircle, DollarSign, PartyPopper } from "lucide-react";
+import { TrendingDown, TrendingUp, Scale, AlertCircle, CheckCircle, DollarSign, PartyPopper, Ruler, Edit2, Save } from "lucide-react";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { WeightChart } from "./WeightChart";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 import confetti from "canvas-confetti";
 import type { Member } from "@/data/members";
-import { calculateFines } from "@/data/members";
+import { calculateFines, calculateBMI, getBMICategory, getMemberHeight, saveMemberHeight } from "@/data/members";
+import { toast } from "sonner";
 
 interface MemberDetailModalProps {
   member: Member | null;
@@ -42,6 +45,29 @@ const triggerConfetti = () => {
 };
 
 export const MemberDetailModal = ({ member, isOpen, onClose }: MemberDetailModalProps) => {
+  const [heightFeet, setHeightFeet] = useState("");
+  const [heightInchesInput, setHeightInchesInput] = useState("");
+  const [isEditingHeight, setIsEditingHeight] = useState(false);
+  const [savedHeight, setSavedHeight] = useState<number | null>(null);
+
+  // Load saved height when modal opens
+  useEffect(() => {
+    if (member && isOpen) {
+      const stored = getMemberHeight(member.id);
+      setSavedHeight(stored);
+      if (stored) {
+        const feet = Math.floor(stored / 12);
+        const inches = stored % 12;
+        setHeightFeet(feet.toString());
+        setHeightInchesInput(inches.toString());
+      } else {
+        setHeightFeet("");
+        setHeightInchesInput("");
+        setIsEditingHeight(true); // Auto-open editor if no height
+      }
+    }
+  }, [member, isOpen]);
+
   if (!member) return null;
 
   const percentLoss = ((member.startingWeight - member.currentWeight) / member.startingWeight) * 100;
@@ -52,6 +78,27 @@ export const MemberDetailModal = ({ member, isOpen, onClose }: MemberDetailModal
   const goalProgress = Math.min((percentLoss / 7) * 100, 100);
   const hasReachedGoal = percentLoss >= 7;
 
+  const heightInches = savedHeight || member.heightInches;
+  const hasBMI = heightInches != null && heightInches > 0;
+  const bmi = hasBMI ? calculateBMI(member.currentWeight, heightInches) : null;
+  const bmiCategory = bmi ? getBMICategory(bmi) : null;
+
+  const handleSaveHeight = () => {
+    const feet = parseInt(heightFeet) || 0;
+    const inches = parseInt(heightInchesInput) || 0;
+    const totalInches = feet * 12 + inches;
+    
+    if (totalInches < 48 || totalInches > 96) {
+      toast.error("Please enter a valid height (4'0\" - 8'0\")");
+      return;
+    }
+    
+    saveMemberHeight(member.id, totalInches);
+    setSavedHeight(totalInches);
+    setIsEditingHeight(false);
+    toast.success("Height saved!");
+  };
+
   // Trigger confetti when modal opens and member has reached 7% goal
   useEffect(() => {
     if (isOpen && hasReachedGoal) {
@@ -61,7 +108,7 @@ export const MemberDetailModal = ({ member, isOpen, onClose }: MemberDetailModal
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="max-w-lg border-border bg-gradient-card">
+      <DialogContent className="max-w-lg border-border bg-gradient-card max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-3 font-display text-2xl">
             <motion.div
@@ -151,6 +198,81 @@ export const MemberDetailModal = ({ member, isOpen, onClose }: MemberDetailModal
               </p>
             </motion.div>
           </div>
+
+          {/* BMI Section */}
+          <motion.div
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.25 }}
+            className="rounded-lg border border-border bg-secondary/50 p-4"
+          >
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2 text-muted-foreground">
+                <Ruler className="h-4 w-4" />
+                <span className="text-xs uppercase">BMI Calculator</span>
+              </div>
+              {hasBMI && !isEditingHeight && (
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setIsEditingHeight(true)}
+                  className="h-6 px-2 text-xs"
+                >
+                  <Edit2 className="h-3 w-3 mr-1" />
+                  Edit
+                </Button>
+              )}
+            </div>
+
+            {isEditingHeight || !hasBMI ? (
+              <div className="space-y-3">
+                <p className="text-sm text-muted-foreground">
+                  Enter height to calculate BMI:
+                </p>
+                <div className="flex items-center gap-2">
+                  <div className="flex items-center gap-1">
+                    <Input
+                      type="number"
+                      placeholder="5"
+                      value={heightFeet}
+                      onChange={(e) => setHeightFeet(e.target.value)}
+                      className="w-16 text-center"
+                      min="4"
+                      max="7"
+                    />
+                    <span className="text-muted-foreground">ft</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Input
+                      type="number"
+                      placeholder="10"
+                      value={heightInchesInput}
+                      onChange={(e) => setHeightInchesInput(e.target.value)}
+                      className="w-16 text-center"
+                      min="0"
+                      max="11"
+                    />
+                    <span className="text-muted-foreground">in</span>
+                  </div>
+                  <Button onClick={handleSaveHeight} size="sm" className="gap-1">
+                    <Save className="h-3 w-3" />
+                    Save
+                  </Button>
+                </div>
+              </div>
+            ) : (
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">
+                    Height: {Math.floor(heightInches! / 12)}'{heightInches! % 12}"
+                  </p>
+                  <p className={`font-display text-2xl font-bold ${bmiCategory?.color}`}>
+                    {bmi?.toFixed(1)} <span className="text-sm font-normal">({bmiCategory?.label})</span>
+                  </p>
+                </div>
+              </div>
+            )}
+          </motion.div>
 
           {/* Goal Progress */}
           <motion.div

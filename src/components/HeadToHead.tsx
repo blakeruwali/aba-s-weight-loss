@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Swords, ChevronDown, Trophy, TrendingDown, Scale, DollarSign } from "lucide-react";
-import { members, calculateFines, calculateBMI } from "@/data/members";
+import { members, calculateFines, calculateBMI, getMemberHeight } from "@/data/members";
 import { Button } from "./ui/button";
 
 export const HeadToHead = () => {
@@ -12,7 +12,13 @@ export const HeadToHead = () => {
 
   const getStats = (member: typeof members[0]) => {
     const percentLoss = ((member.startingWeight - member.currentWeight) / member.startingWeight) * 100;
-    const bmi = calculateBMI(member.currentWeight, member.heightInches);
+    
+    // Get height from localStorage or member data
+    const storedHeight = getMemberHeight(member.id);
+    const heightInches = storedHeight || member.heightInches;
+    const hasBMI = heightInches != null && heightInches > 0;
+    const bmi = hasBMI ? calculateBMI(member.currentWeight, heightInches) : null;
+    
     const fines = calculateFines(member);
     const rank = [...members]
       .sort((a, b) => {
@@ -22,7 +28,7 @@ export const HeadToHead = () => {
       })
       .findIndex((m) => m.id === member.id) + 1;
     
-    return { percentLoss, bmi, fines, rank };
+    return { percentLoss, bmi, hasBMI, fines, rank };
   };
 
   const stats1 = getStats(fighter1);
@@ -35,6 +41,7 @@ export const HeadToHead = () => {
       value2: `${stats2.percentLoss.toFixed(1)}%`,
       winner: stats1.percentLoss > stats2.percentLoss ? 1 : stats1.percentLoss < stats2.percentLoss ? 2 : 0,
       icon: TrendingDown,
+      show: true,
     },
     { 
       label: "Current Rank", 
@@ -42,13 +49,15 @@ export const HeadToHead = () => {
       value2: `#${stats2.rank}`,
       winner: stats1.rank < stats2.rank ? 1 : stats1.rank > stats2.rank ? 2 : 0,
       icon: Trophy,
+      show: true,
     },
     { 
       label: "BMI", 
-      value1: stats1.bmi.toFixed(1), 
-      value2: stats2.bmi.toFixed(1),
-      winner: stats1.bmi < stats2.bmi ? 1 : stats1.bmi > stats2.bmi ? 2 : 0,
+      value1: stats1.bmi?.toFixed(1) || "N/A", 
+      value2: stats2.bmi?.toFixed(1) || "N/A",
+      winner: (stats1.bmi && stats2.bmi) ? (stats1.bmi < stats2.bmi ? 1 : stats1.bmi > stats2.bmi ? 2 : 0) : 0,
       icon: Scale,
+      show: stats1.hasBMI || stats2.hasBMI,
     },
     { 
       label: "Fines Owed", 
@@ -56,8 +65,9 @@ export const HeadToHead = () => {
       value2: `$${stats2.fines}`,
       winner: stats1.fines < stats2.fines ? 1 : stats1.fines > stats2.fines ? 2 : 0,
       icon: DollarSign,
+      show: true,
     },
-  ];
+  ].filter(c => c.show);
 
   const MemberSelector = ({ 
     selected, 

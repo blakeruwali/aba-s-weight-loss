@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { Trophy, TrendingDown, TrendingUp, Minus, DollarSign, Sparkles, Skull, Eye } from "lucide-react";
 import type { Member } from "@/data/members";
-import { calculateFines, calculateBMI, getBMICategory } from "@/data/members";
+import { calculateFines, calculateBMI, getBMICategory, getMemberHeight } from "@/data/members";
 import { getMemberBadges, getMemberRoast } from "@/lib/roasts";
 import { StatusBadge } from "./StatusBadge";
 import { useEasterEgg } from "@/hooks/useEasterEgg";
@@ -22,8 +22,14 @@ export const LeaderboardCard = ({ member, rank, percentLoss, index, totalMembers
   const isLastPlace = rank === totalMembers;
   const badges = getMemberBadges(member, percentLoss, rank, totalMembers);
   const roast = getMemberRoast(member, percentLoss, rank, totalMembers);
-  const bmi = calculateBMI(member.currentWeight, member.heightInches);
-  const bmiCategory = getBMICategory(bmi);
+  
+  // Get height from localStorage or member data
+  const storedHeight = getMemberHeight(member.id);
+  const heightInches = storedHeight || member.heightInches;
+  const hasBMI = heightInches != null && heightInches > 0;
+  const bmi = hasBMI ? calculateBMI(member.currentWeight, heightInches) : null;
+  const bmiCategory = bmi ? getBMICategory(bmi) : null;
+  
   const { handleClick: handleEasterEgg, triggered: easterEggTriggered } = useEasterEgg();
   
   const handleCardClick = () => {
@@ -199,10 +205,14 @@ export const LeaderboardCard = ({ member, rank, percentLoss, index, totalMembers
               →
             </motion.span>
             <span className="text-foreground font-medium">{member.currentWeight} lbs</span>
-            <span className="text-muted-foreground/60">•</span>
-            <span className={`font-medium ${bmiCategory.color}`}>
-              BMI {bmi.toFixed(1)}
-            </span>
+            {hasBMI && bmi && bmiCategory && (
+              <>
+                <span className="text-muted-foreground/60">•</span>
+                <span className={`font-medium ${bmiCategory.color}`}>
+                  BMI {bmi.toFixed(1)}
+                </span>
+              </>
+            )}
           </div>
           {/* Roast message */}
           {roast && (
