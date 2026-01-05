@@ -5,6 +5,7 @@ import { RulesCards } from "@/components/RulesCards";
 import { CountdownTimer } from "@/components/CountdownTimer";
 import { Footer } from "@/components/Footer";
 import { WallOfShame } from "@/components/WallOfShame";
+import { Superlatives } from "@/components/Superlatives";
 import { motion } from "framer-motion";
 import { members } from "@/data/members";
 
@@ -40,6 +41,9 @@ const Index = () => {
       
       {/* Wall of Shame - Bottom 3 */}
       <WallOfShame members={sortedMembers} />
+      
+      {/* Superlatives - Funny Awards */}
+      <Superlatives />
       
       <RulesCards />
       <Footer />
