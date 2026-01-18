@@ -99,7 +99,7 @@ export const members: Member[] = [
     balancePaid: 100, 
     startingWeight: 163.1, 
     currentWeight: 163.1, 
-    fines: 0,
+    fines: 15, // $15 no-show fine for Week 2
     weightHistory: [
       { date: "2025-01-04", weight: 163.1, attended: true },
       { date: "2026-01-18", weight: 163.1, attended: false }
@@ -200,6 +200,7 @@ export const members: Member[] = [
     startingWeight: 195.1, 
     currentWeight: 188.4, 
     fines: 0,
+    heightInches: 67, // 5'7"
     weightHistory: [
       { date: "2025-01-04", weight: 195.1, attended: true },
       { date: "2026-01-18", weight: 188.4, attended: true }
