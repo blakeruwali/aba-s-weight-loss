@@ -112,6 +112,7 @@ export const members: Member[] = [
     startingWeight: 202.2, 
     currentWeight: 199.0, 
     fines: 0,
+    heightInches: 69, // 5'9"
     weightHistory: [
       { date: "2025-01-04", weight: 202.2, attended: true },
       { date: "2026-01-18", weight: 199.0, attended: true }
