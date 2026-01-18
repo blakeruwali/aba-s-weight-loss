@@ -124,6 +124,7 @@ export const members: Member[] = [
     startingWeight: 182.2, 
     currentWeight: 173.1, 
     fines: 0,
+    heightInches: 69, // 5'9"
     weightHistory: [
       { date: "2025-01-04", weight: 182.2, attended: true },
       { date: "2026-01-18", weight: 173.1, attended: true }
@@ -172,6 +173,7 @@ export const members: Member[] = [
     startingWeight: 163.1, 
     currentWeight: 160.7, 
     fines: 0,
+    heightInches: 64, // 5'4"
     weightHistory: [
       { date: "2025-01-04", weight: 163.1, attended: true },
       { date: "2026-01-18", weight: 160.7, attended: true }
@@ -208,6 +210,7 @@ export const members: Member[] = [
     startingWeight: 157.6, 
     currentWeight: 156.4, 
     fines: 0,
+    heightInches: 65, // 5'5"
     weightHistory: [
       { date: "2025-01-04", weight: 157.6, attended: true },
       { date: "2026-01-18", weight: 156.4, attended: true }

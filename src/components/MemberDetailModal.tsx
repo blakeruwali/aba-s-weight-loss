@@ -54,14 +54,17 @@ export const MemberDetailModal = ({ member, isOpen, onClose }: MemberDetailModal
   const percentLoss = member ? ((member.startingWeight - member.currentWeight) / member.startingWeight) * 100 : 0;
   const hasReachedGoal = percentLoss >= 7;
 
-  // Load saved height when modal opens
+  // Load saved height when modal opens - prioritize stored height, then member data
   useEffect(() => {
     if (member && isOpen) {
       const stored = getMemberHeight(member.id);
-      setSavedHeight(stored);
-      if (stored) {
-        const feet = Math.floor(stored / 12);
-        const inches = stored % 12;
+      // Use localStorage if available, otherwise use member's built-in height
+      const effectiveHeight = stored || member.heightInches || null;
+      setSavedHeight(effectiveHeight);
+      
+      if (effectiveHeight) {
+        const feet = Math.floor(effectiveHeight / 12);
+        const inches = effectiveHeight % 12;
         setHeightFeet(feet.toString());
         setHeightInchesInput(inches.toString());
         setIsEditingHeight(false);
