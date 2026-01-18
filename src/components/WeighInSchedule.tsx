@@ -4,7 +4,7 @@ import { challengeConfig } from "@/data/members";
 
 const generateSchedule = () => {
   const schedule = [];
-  const startDate = new Date("2026-01-04"); // First Sunday
+  const startDate = new Date("2025-01-04"); // First Sunday
   const endDate = new Date(challengeConfig.finalCheckpoint);
   
   let currentDate = new Date(startDate);
