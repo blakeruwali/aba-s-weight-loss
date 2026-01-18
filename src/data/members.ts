@@ -72,7 +72,7 @@ export const members: Member[] = [
   { 
     id: "1", 
     name: "Shikhar", 
-    balancePaid: 0, 
+    balancePaid: 100,
     startingWeight: 221.9, 
     currentWeight: 221.3, 
     fines: 0,
@@ -108,7 +108,7 @@ export const members: Member[] = [
   { 
     id: "4", 
     name: "Rabin", 
-    balancePaid: 0, 
+    balancePaid: 100,
     startingWeight: 202.2, 
     currentWeight: 199.0, 
     fines: 0,
