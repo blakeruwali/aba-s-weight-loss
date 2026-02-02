@@ -16,6 +16,7 @@ import { FineCalculator } from "@/components/FineCalculator";
 import { WeighInSchedule } from "@/components/WeighInSchedule";
 import { ShareCard } from "@/components/ShareCard";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { WeeklyWinner } from "@/components/WeeklyWinner";
 import { motion } from "framer-motion";
 import { members } from "@/data/members";
 
@@ -50,6 +51,9 @@ const Index = () => {
       
       {/* Prize Pool */}
       <PrizePoolTracker />
+      
+      {/* Weekly Winner - Based on week-over-week performance */}
+      <WeeklyWinner />
       
       <Leaderboard />
       
