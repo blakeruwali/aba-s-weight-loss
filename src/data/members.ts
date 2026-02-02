@@ -74,11 +74,12 @@ export const members: Member[] = [
     name: "Shikhar", 
     balancePaid: 100,
     startingWeight: 221.9, 
-    currentWeight: 221.3, 
-    fines: 0,
+    currentWeight: 222.5, 
+    fines: 15, // $15 fine for weight gain at checkpoint 2
     weightHistory: [
       { date: "2025-01-04", weight: 221.9, attended: true },
-      { date: "2026-01-18", weight: 221.3, attended: true }
+      { date: "2026-01-18", weight: 221.3, attended: true },
+      { date: "2026-02-01", weight: 222.5, attended: true }
     ]
   },
   { 
@@ -86,12 +87,13 @@ export const members: Member[] = [
     name: "Bivek", 
     balancePaid: 100, 
     startingWeight: 193, 
-    currentWeight: 188.3, 
+    currentWeight: 182.2, 
     fines: 0,
     heightInches: 67, // 5'7"
     weightHistory: [
       { date: "2025-01-04", weight: 193, attended: true },
-      { date: "2026-01-18", weight: 188.3, attended: true }
+      { date: "2026-01-18", weight: 188.3, attended: true },
+      { date: "2026-02-01", weight: 182.2, attended: true }
     ]
   },
   { 
@@ -99,11 +101,12 @@ export const members: Member[] = [
     name: "Suraj", 
     balancePaid: 100, 
     startingWeight: 163.1, 
-    currentWeight: 163.1, 
+    currentWeight: 162.8, 
     fines: 15, // $15 no-show fine for Week 2
     weightHistory: [
       { date: "2025-01-04", weight: 163.1, attended: true },
-      { date: "2026-01-18", weight: 163.1, attended: false }
+      { date: "2026-01-18", weight: 162.8, attended: false },
+      { date: "2026-02-01", weight: 162.8, attended: true }
     ]
   },
   { 
@@ -111,12 +114,13 @@ export const members: Member[] = [
     name: "Rabin", 
     balancePaid: 100,
     startingWeight: 202.2, 
-    currentWeight: 199.0, 
+    currentWeight: 197.3, 
     fines: 0,
     heightInches: 69, // 5'9"
     weightHistory: [
       { date: "2025-01-04", weight: 202.2, attended: true },
-      { date: "2026-01-18", weight: 199.0, attended: true }
+      { date: "2026-01-18", weight: 199.0, attended: true },
+      { date: "2026-02-01", weight: 197.3, attended: true }
     ]
   },
   { 
@@ -124,12 +128,13 @@ export const members: Member[] = [
     name: "Rajeev", 
     balancePaid: 100, 
     startingWeight: 182.2, 
-    currentWeight: 173.1, 
+    currentWeight: 169.7, 
     fines: 0,
     heightInches: 69, // 5'9"
     weightHistory: [
       { date: "2025-01-04", weight: 182.2, attended: true },
-      { date: "2026-01-18", weight: 173.1, attended: true }
+      { date: "2026-01-18", weight: 173.1, attended: true },
+      { date: "2026-02-01", weight: 169.7, attended: true }
     ]
   },
   { 
@@ -137,12 +142,13 @@ export const members: Member[] = [
     name: "Pradeep", 
     balancePaid: 100, 
     startingWeight: 190.1, 
-    currentWeight: 183.1, 
+    currentWeight: 180.1, 
     fines: 0,
     heightInches: 68, // 5'8"
     weightHistory: [
       { date: "2025-01-04", weight: 190.1, attended: true },
-      { date: "2026-01-18", weight: 183.1, attended: true }
+      { date: "2026-01-18", weight: 183.1, attended: true },
+      { date: "2026-02-01", weight: 180.1, attended: true }
     ]
   },
   { 
@@ -150,11 +156,12 @@ export const members: Member[] = [
     name: "Danny", 
     balancePaid: 100, 
     startingWeight: 191.1, 
-    currentWeight: 177.5, 
+    currentWeight: 174.9, 
     fines: 0,
     weightHistory: [
       { date: "2025-01-04", weight: 191.1, attended: true },
-      { date: "2026-01-18", weight: 177.5, attended: true }
+      { date: "2026-01-18", weight: 177.5, attended: true },
+      { date: "2026-02-01", weight: 174.9, attended: true }
     ]
   },
   { 
@@ -162,11 +169,12 @@ export const members: Member[] = [
     name: "Purushottam", 
     balancePaid: 100, 
     startingWeight: 187.1, 
-    currentWeight: 182.5, 
+    currentWeight: 180.0, 
     fines: 0,
     weightHistory: [
       { date: "2025-01-04", weight: 187.1, attended: true },
-      { date: "2026-01-18", weight: 182.5, attended: true }
+      { date: "2026-01-18", weight: 182.5, attended: true },
+      { date: "2026-02-01", weight: 180.0, attended: true }
     ]
   },
   { 
@@ -174,12 +182,13 @@ export const members: Member[] = [
     name: "Bipul", 
     balancePaid: 100, 
     startingWeight: 163.1, 
-    currentWeight: 160.7, 
+    currentWeight: 159.1, 
     fines: 0,
     heightInches: 64, // 5'4"
     weightHistory: [
       { date: "2025-01-04", weight: 163.1, attended: true },
-      { date: "2026-01-18", weight: 160.7, attended: true }
+      { date: "2026-01-18", weight: 160.7, attended: true },
+      { date: "2026-02-01", weight: 159.1, attended: true }
     ]
   },
   { 
@@ -191,7 +200,8 @@ export const members: Member[] = [
     fines: 0,
     weightHistory: [
       { date: "2025-01-04", weight: 199.1, attended: true },
-      { date: "2026-01-18", weight: 199.1, attended: true }
+      { date: "2026-01-18", weight: 199.1, attended: true },
+      { date: "2026-02-01", weight: 199.1, attended: true }
     ]
   },
   { 
@@ -199,12 +209,13 @@ export const members: Member[] = [
     name: "Bikram", 
     balancePaid: 100, 
     startingWeight: 195.1, 
-    currentWeight: 188.4, 
+    currentWeight: 185.7, 
     fines: 0,
     heightInches: 67, // 5'7"
     weightHistory: [
       { date: "2025-01-04", weight: 195.1, attended: true },
-      { date: "2026-01-18", weight: 188.4, attended: true }
+      { date: "2026-01-18", weight: 188.4, attended: true },
+      { date: "2026-02-01", weight: 185.7, attended: true }
     ]
   },
   { 
@@ -212,12 +223,13 @@ export const members: Member[] = [
     name: "Blake", 
     balancePaid: 100, 
     startingWeight: 157.6, 
-    currentWeight: 156.4, 
+    currentWeight: 153.2, 
     fines: 0,
     heightInches: 65, // 5'5"
     weightHistory: [
       { date: "2025-01-04", weight: 157.6, attended: true },
-      { date: "2026-01-18", weight: 156.4, attended: true }
+      { date: "2026-01-18", weight: 156.4, attended: true },
+      { date: "2026-02-01", weight: 153.2, attended: true }
     ]
   },
 ];
@@ -234,7 +246,7 @@ export const challengeConfig = {
   weighInFrequency: "weekly",
   weighInDay: "Sunday",
   weighInTime: "2:00 PM",
-  nextCheckpoint: "January 25, 2026",
+  nextCheckpoint: "February 15, 2026",
   finalCheckpoint: "March 29, 2026",
 };
 
